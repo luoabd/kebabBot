@@ -8,6 +8,85 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
+swear_words = [
+    "ape",
+    "ass",
+    "arse",
+    "asrehole",
+    "balls",
+    "bastard",
+    "beaner",
+    "beaver",
+    "bellend",
+    "bint",
+    "bitch",
+    "bloody",
+    "bollocks",
+    "bugger",
+    "bullshit",
+    "ching", "chong",
+    "chink",
+    "chinky",
+    "clunge",
+    "cock",
+    "cocksucker",
+    "coon",
+    "cow",
+    "crap",
+    "cracker",
+    "cunt",
+    "damn",
+    "darky",
+    "dick",
+    "dickhead",
+    "dildo",
+    "fag",
+    "faggot",
+    "fanny",
+    "feck",
+    "flaps",
+    "fuck",
+    "gash",
+    "gay",
+    "ginger",
+    "git",
+    "god",
+    "godamn",
+    "goddamn",
+    "gook",
+    "hoe",
+    "jesus",
+    "christ",
+    "jizz",
+    "knob",
+    "minge",
+    "minger",
+    "munter",
+    "nigga",
+    "nigger",
+    "nonce",
+    "penis"
+    "pissed",
+    "prick",
+    "punani",
+    "pussy",
+    "retard",
+    "shag"
+    "shit",
+    "skank",
+    "slag",
+    "slope",
+    "slut",
+    "snatch",
+    "spastic",
+    "sod-off",
+    "tit",
+    "vagina",
+    "twat",
+    "wank",
+    "wanker",
+    "whore"
+]
 bot = commands.Bot(command_prefix='!')
 
 @bot.event
@@ -42,6 +121,14 @@ async def joke(ctx):
 async def roll_dice(ctx):
     dice = str(random.choice(range(1, 7)))
     await ctx.send(dice)
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    if any(word in message.content.lower() for word in swear_words):
+        await message.channel.send(f'**{message.author.display_name}**, no swearing in this christian server!')
+    await bot.process_commands(message)
 
 @bot.command(name='confused', help='Shows a picture of anime girl confused')
 async def lewd(ctx):
