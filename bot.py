@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import random
 
 from discord.ext import commands
-from cogs import music
+from cogs import music, meme
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -25,6 +25,7 @@ pout_images = readfile("./strings/pout.txt")
 smug_images = readfile("./strings/smug.txt")
 cry_images = readfile("./strings/cry.txt")
 
+COGS = [music.Music, meme.Meme]
 bot = commands.Bot(command_prefix='!')
 
 @bot.event
@@ -36,6 +37,10 @@ async def on_ready():
         f'{bot.user.name} is connected to the following server:\n'
         f'{guild.name}(id: {guild.id})'
         )
+
+def add_cogs(COGS):
+    for cog in COGS:
+        bot.add_cog(cog(bot))
 
 @bot.event
 async def on_member_join(member):
@@ -89,5 +94,5 @@ async def cry(ctx):
 
 def run():
     # add_cogs(bot)
-    bot.add_cog(music.Music(bot))
+    add_cogs(COGS)
     bot.run(TOKEN)
