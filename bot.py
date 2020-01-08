@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import random
 
 from discord.ext import commands
+from cogs import music
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -131,7 +132,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 @bot.command(name='confused', help='Shows a picture of anime girl confused')
-async def lewd(ctx):
+async def confused(ctx):
     confused_images = [
         "http://i.imgur.com/RCotXAK.png",
         "http://i.imgur.com/yN5cwQq.jpg",
@@ -202,7 +203,7 @@ async def lewd(ctx):
     await ctx.send(response)
 
 @bot.command(name='pout', help='Shows a picture of anime girl pouting')
-async def lewd(ctx):
+async def pout(ctx):
     pout_images = [
         "http://i.imgur.com/hsjBcz1.jpg",
         "http://i.imgur.com/oJSVNzT.jpg",
@@ -222,7 +223,7 @@ async def lewd(ctx):
     await ctx.send(response)
 
 @bot.command(name='smug', help='Shows a picture of anime girl being smug')
-async def lewd(ctx):
+async def smug(ctx):
     smug_images = [
         "http://i.imgur.com/zUwqrhM.png",
         "http://i.imgur.com/TYqPh89.jpg",
@@ -261,7 +262,7 @@ async def lewd(ctx):
     await ctx.send(response)
 
 @bot.command(name='cry', help='Shows a picture of anime girl crying')
-async def lewd(ctx):
+async def cry(ctx):
     cry_images = [
         "http://i.imgur.com/TTUBf2r.gif",
         "http://i.imgur.com/TP6dYGh.gif",
@@ -351,4 +352,7 @@ async def lewd(ctx):
     response = random.choice(cry_images)
     await ctx.send(response)
 
-bot.run(TOKEN)
+def run():
+    # add_cogs(bot)
+    bot.add_cog(music.Music(bot))
+    bot.run(TOKEN)
