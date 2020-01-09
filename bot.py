@@ -4,6 +4,7 @@ import random
 
 from discord.ext import commands
 from cogs import music, meme
+from googletrans import Translator
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -59,12 +60,18 @@ async def roll_dice(ctx):
     dice = str(random.choice(range(1, 7)))
     await ctx.send(dice)
 
+translator = Translator()
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
     if any(word in message.content.lower() for word in swear_words):
         await message.channel.send(f'**{message.author.display_name}**, no swearing in this christian server!')
+    language = translator.detect(message.content.lower())
+    if not language.lang == "en":
+        translation = translator.translate(message.content.lower())
+        await message.channel.send(f'**{message.author.display_name}** said: {translation.text}')
+
     await bot.process_commands(message)
 
 @bot.command(name='confused', help='Shows a picture of anime girl confused')
@@ -91,6 +98,13 @@ async def smug(ctx):
 async def cry(ctx):
     response = random.choice(cry_images)
     await ctx.send(response)
+
+@bot.command(help="Translate text to a language (default=English)")
+async def translate(ctx, text, lang="en"):
+    if lang.lower() == "chinese":
+        lang = "zh-cn"
+    translation = translator.translate(text, dest=lang)
+    await ctx.send(f'translation: {translation.text}')
 
 def run():
     # add_cogs(bot)
