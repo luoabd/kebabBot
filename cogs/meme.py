@@ -2,6 +2,9 @@ from discord.ext import commands
 import discord
 import random
 import praw
+import requests
+import json
+import imgflip
 
 import os
 from dotenv import load_dotenv
@@ -28,4 +31,11 @@ class Meme(commands.Cog):
             if post.stickied: continue
             memes.append(post.url)
         response = random.choice(memes)
+        await ctx.send(response)
+    @commands.command(brief="Create your own meme",
+                        help="Available meme templates: distracted_bf, confused_cat, drakepost, \
+                        modern_problems, two_buttons, smile")
+    async def creatememe(self, ctx, meme, top, bottom=None, extra=None):
+        creator = imgflip.ImgFlipCreator()
+        response = creator.create(meme, top, bottom,extra)
         await ctx.send(response)
