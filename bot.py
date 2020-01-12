@@ -27,7 +27,7 @@ pout_images = readfile("./strings/pout.txt")
 smug_images = readfile("./strings/smug.txt")
 cry_images = readfile("./strings/cry.txt")
 auto_translation = False
-profanity_warning = True
+profanity_warning = False
 
 COGS = [music.Music, meme.Meme]
 bot = commands.Bot(command_prefix='!')

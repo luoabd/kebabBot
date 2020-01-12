@@ -21,17 +21,35 @@ reddit = praw.Reddit(client_id=CLIENT_ID,
                      password=REDDIT_PASSWORD,
                      user_agent=REDDIT_USER_AGENT,
                      username=REDDIT_USERNAME)
+suffix = [
+    ".jpg",
+    ".gif",
+    ".png",
+    ".jpeg",
+    ".bmp"
+]
 
 class Meme(commands.Cog):
     @commands.command(help="Show a meme from a subreddit")
     async def showmeme(self, ctx, sub_name="dankmemes"):
         sub = reddit.subreddit(sub_name)
         memes = []
-        for post in sub.hot(limit=15):
-            if post.stickied: continue
-            memes.append(post.url)
-        response = random.choice(memes)
-        await ctx.send(response)
+        if sub.over18 and not ctx.channel.is_nsfw():
+            await ctx.send("NSFW subreddit detected. Please use the nsfw channel and try again")
+        else:
+            for post in sub.hot(limit=15):
+            #Ignore sticky posts
+                if post.stickied: continue
+            #Only accept images
+                if not post.url.endswith(tuple(suffix)): continue
+                memes.append(post.url)
+            # check if the list has any links
+            if memes:
+                response = random.choice(memes)
+            else:
+                response = f"No memes found in the {sub_name} subreddit"
+            await ctx.send(response)
+
     @commands.command(brief="Create your own meme",
                         help="Available meme templates: distracted_bf, confused_cat, drakepost, \
                         modern_problems, two_buttons, smile")
