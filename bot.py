@@ -70,7 +70,7 @@ async def on_message(message):
     if message.author == bot.user:
         return
     if profanity_warning and any(word in message.content.lower() for word in swear_words):
-        await message.channel.send(f'**{message.author.display_name}**, no swearing in this christian server!')
+        await message.channel.send(f'**{message.author.mention}**, no swearing in this christian server!')
     language = translator.detect(message.content.lower())
     if auto_translation and not language.lang == "en":
         translation = translator.translate(message.content.lower())
@@ -117,27 +117,28 @@ async def profanity(ctx):
     global profanity_warning
     profanity_warning = not profanity_warning
     if profanity_warning:
-        await ctx.send('The auto translation is now **on**')
+        await ctx.send('The profanity warning is now **on**')
     else:
-        await ctx.send('The auto translation is now **off**')
+        await ctx.send('The profanity warning is now **off**')
 
 @profanity.error
-async def profanity_error(error, ctx):
+async def profanity_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.send(f"You need to be an administrator {ctx.message.author.mention}")
 
 @bot.command(help="Turn on/off the auto-translation (default=off)")
 @commands.guild_only()
 @commands.has_permissions(administrator=True)
-async def auto_translate(ctx):
+async def auto_translate(ctx, error):
     global auto_translation
     auto_translation = not auto_translation
     if auto_translation:
         await ctx.send('The auto translation is now **on**')
     else:
         await ctx.send('The auto translation is now **off**')
+
 @auto_translate.error
-async def auto_translate_error(error, ctx):
+async def auto_translate_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.send(f"You need to be an administrator {ctx.message.author.mention}")
 def run():
