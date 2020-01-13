@@ -17,6 +17,7 @@ class Video:
             video = self._get_info(url_or_search)
             video_format = video["formats"][0]
             self.stream_url = video_format["url"]
+            self.download_url = ydl.prepare_filename(video)
             self.video_url = video["webpage_url"]
             self.title = video["title"]
             self.uploader = video["uploader"] if "uploader" in video else ""
@@ -26,7 +27,7 @@ class Video:
 
     def _get_info(self, video_url):
        with ytdl.YoutubeDL(YTDL_OPTS) as ydl:
-            info = ydl.extract_info(video_url, download=False)
+            info = ydl.extract_info(video_url, download=True)
             video = None
             if "_type" in info and info["_type"] == "playlist":
                 return self._get_info(

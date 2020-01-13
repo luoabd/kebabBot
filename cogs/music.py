@@ -1,3 +1,4 @@
+import os
 from discord.ext import commands
 import discord
 import asyncio
@@ -40,6 +41,14 @@ async def is_audio_requester(ctx):
         raise commands.CommandError(
             "You need to be the song requester to do that.")
 
+def deleteFiles():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    parent = os.path.abspath(os.path.join(dir_path, os.pardir))
+    for f in os.listdir(parent):
+        if f.endswith('.webm'):
+            os.remove(f)
+            print(f"{f} is removed")
+    return
 
 class Music(commands.Cog):
     """Bot commands to help play music."""
@@ -66,6 +75,8 @@ class Music(commands.Cog):
             await client.disconnect()
             state.playlist = []
             state.now_playing = None
+            #Delete the music files from the system
+            deleteFiles()
         else:
             raise commands.CommandError("Not in a voice channel.")
 
@@ -152,7 +163,7 @@ class Music(commands.Cog):
         state.now_playing = song
         state.skip_votes = set()  # clear skip votes
         source = discord.PCMVolumeTransformer(
-            discord.FFmpegPCMAudio(song.stream_url), volume=state.volume)
+            discord.FFmpegPCMAudio(song.download_url), volume=state.volume)
 
         def after_playing(err):
             if len(state.playlist) > 0:
@@ -161,6 +172,8 @@ class Music(commands.Cog):
             else:
                 asyncio.run_coroutine_threadsafe(client.disconnect(),
                                                  self.bot.loop)
+                #Delete the music files from the system
+                deleteFiles()
 
         client.play(source, after=after_playing)
 
