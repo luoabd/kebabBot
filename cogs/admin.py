@@ -1,5 +1,6 @@
 from discord.ext import commands
 from googletrans import Translator
+import json
 
 def readfile(filename):
     with open(filename) as handle:
@@ -9,6 +10,20 @@ def readfile(filename):
             output.append(line)
     return output
 
+prefixes = []
+with open("./prefixes.json") as f:
+    prefixes = json.load(f)
+
+async def determine_prefix(bot, message):
+    guild = message.guild
+    #Only allow custom prefixs in guild
+    if guild.id in prefixes:
+        return prefixes[guild.id]
+    else:
+        return '!'
+
+
+
 class Admin(commands.Cog):
     """Bot commands available for Administrators."""
     def __init__(self, bot):
@@ -17,6 +32,7 @@ class Admin(commands.Cog):
         self.translator = Translator()
         self.auto_translation = False
         self.profanity_warning = False
+        global prefixes
 
     @commands.command(help="Turn on/off the profanity warning (default=off)")
     @commands.guild_only()
@@ -60,3 +76,12 @@ class Admin(commands.Cog):
     async def auto_translate_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send(f"You need to be an administrator {ctx.message.author.mention}")
+
+    @commands.command(help="Change the prefix used by the bot")
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
+    async def prefix(self, ctx, new_prefix):
+        prefixes[ctx.guild.id] = new_prefix
+        with open("./prefixes.json", "w") as f:
+            json.dump(prefixes, f)
+        await ctx.send(f'{new_prefix} is the new prefix')

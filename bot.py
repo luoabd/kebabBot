@@ -8,7 +8,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 COGS = [music.Music, meme.Meme, fun.Fun, utility.Utility, admin.Admin]
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix= admin.determine_prefix)
 
 @bot.event
 async def on_ready():

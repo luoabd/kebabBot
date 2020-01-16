@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 swear_words.txt
 jokes.txt
+prefixes.json
