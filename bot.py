@@ -2,13 +2,12 @@ import os
 from dotenv import load_dotenv
 
 from discord.ext import commands
-from cogs import music, meme, fun, translate, admin
+from cogs import music, meme, fun, utility, admin
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
 
-COGS = [music.Music, meme.Meme, fun.Fun, translate.Translate, admin.Admin]
+COGS = [music.Music, meme.Meme, fun.Fun, utility.Utility, admin.Admin]
 bot = commands.Bot(command_prefix='!')
 
 @bot.event
