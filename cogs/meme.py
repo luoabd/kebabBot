@@ -1,9 +1,6 @@
 from discord.ext import commands
-import discord
 import random
 import praw
-import requests
-import json
 import imgflip
 
 import os
@@ -21,15 +18,19 @@ reddit = praw.Reddit(client_id=CLIENT_ID,
                      password=REDDIT_PASSWORD,
                      user_agent=REDDIT_USER_AGENT,
                      username=REDDIT_USERNAME)
-suffix = [
-    ".jpg",
-    ".gif",
-    ".png",
-    ".jpeg",
-    ".bmp"
-]
 
 class Meme(commands.Cog):
+    """Bot commands for memes."""
+    def __init__(self, bot):
+        self.bot = bot
+        self.suffix = [
+            ".jpg",
+            ".gif",
+            ".png",
+            ".jpeg",
+            ".bmp"
+        ]
+
     @commands.command(help="Show a meme from a subreddit")
     async def showmeme(self, ctx, sub_name="dankmemes"):
         sub = reddit.subreddit(sub_name)
@@ -41,7 +42,7 @@ class Meme(commands.Cog):
             #Ignore sticky posts
                 if post.stickied: continue
             #Only accept images
-                if not post.url.endswith(tuple(suffix)): continue
+                if not post.url.endswith(tuple(self.suffix)): continue
                 memes.append(post.url)
             # check if the list has any links
             if memes:
